@@ -1,0 +1,17 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t ashpyra/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true ashpyra/react-test npm test
+
+after_success:
+  - docker build -t ashpyra/multi-client ./client
+  - docker build -t ashpyra/multi-server ./server
+  - docker build -t ashpyra/multi-nginx ./nginx
+  - docker build -t ashpyra/multi-worker ./worker
